@@ -8,6 +8,10 @@ router.get("/", (req, res) => {
 
 router.get("/list-item", async (req, res) => {
   try {
+    const { username } = req.headers;
+    if (!username) {
+      return res.status(401).json({ error: "User is required." });
+    }
     const items = await ListItem.find();
     return res.json(items);
   } catch (error) {
@@ -17,6 +21,10 @@ router.get("/list-item", async (req, res) => {
 
 router.post("/list-item", async (req, res) => {
   try {
+    const { username } = req.headers;
+    if (!username) {
+      return res.status(401).json({ error: "User is required." });
+    }
     const { name, quantity, checked } = req.body;
     if (!name || name.length < 3) {
       return res.status(400).json({
@@ -32,6 +40,7 @@ router.post("/list-item", async (req, res) => {
       name,
       quantity,
       checked: checked || false,
+      username,
     });
 
     return res.json(newItem);
